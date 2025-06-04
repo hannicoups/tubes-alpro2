@@ -325,19 +325,19 @@ func insertionSortTanggal(D *TabUser, N int) {
 
 func tampilkan5Terakhir(D TabUser, N int) {
 	fmt.Println("\n=== 5 Hasil Terakhir Self-Assessment ===")
+
 	if N == 0 {
 		fmt.Println("Belum ada data.")
-		return
-	}
+	} else {
+		start := N - 5
+		if start < 0 {
+			start = 0
+		}
 
-	start := N - 5
-	if start < 0 {
-		start = 0
-	}
-
-	fmt.Println("ID\tNama\tSkor")
-	for i := N - 1; i >= start; i-- {
-		fmt.Printf("%03d\t%s\t%d\n", D[i].ID, D[i].Nama, D[i].Skor)
+		fmt.Println("ID\tNama\tSkor")
+		for i := N - 1; i >= start; i-- {
+			fmt.Printf("%03d\t%s\t%d\n", D[i].ID, D[i].Nama, D[i].Skor)
+		}
 	}
 }
 
@@ -371,47 +371,53 @@ func rataRataBulanTerakhir(D TabUser, N int, hariIni string) float64 {
 }
 
 func tambahData(D *TabUser, ID *TabInt, N *int) {
-	if *N >= len(*D) {
-		fmt.Println("Data sudah penuh, tidak bisa tambah lagi.")
-		return
-	}
-
 	var u User
-	var nama, tanggal string
-	var inputID int
-	var pertanyaan TabPertanyaan
+    var nama, tanggal string
+    var inputID int
+    var pertanyaan TabPertanyaan
+	var duplikat int = 0
 
-	fmt.Print("Masukkan ID baru: ")
-	fmt.Scan(&inputID)
+    fmt.Println()
 
-	// Cek apakah ID sudah ada agar tidak duplikat
-	for i := 0; i < *N; i++ {
-		if (*D)[i].ID == inputID {
-			fmt.Println("ID sudah ada, tidak bisa tambah data.")
-			return
-		}
-	}
+    if *N >= len(*D) {
+        fmt.Println("Data sudah penuh, tidak bisa tambah lagi.")
+    } else {
 
-	fmt.Print("Masukkan nama: ")
-	fmt.Scan(&nama)
+        fmt.Print("Masukkan ID baru: ")
+        fmt.Scan(&inputID)
 
-	fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
-	fmt.Scan(&tanggal)
+        // Cek apakah ID sudah ada agar tidak duplikat
+        for i := 0; i < *N; i++ {
+            if (*D)[i].ID == inputID {
+                duplikat++
+            }
+        }
 
-	// Inisialisasi pertanyaan
-	inisialisasiPertanyaan(&pertanyaan)
+        if duplikat > 0 {
+            fmt.Println("ID sudah ada, tidak bisa tambah data.")
+        } else {
+            fmt.Print("Masukkan nama: ")
+            fmt.Scan(&nama)
 
-	// Minta user isi skor dengan pertanyaan
-	skor := pertanyaanSkor(pertanyaan)
+            fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
+            fmt.Scan(&tanggal)
 
-	u.ID = inputID
-	u.Nama = nama
-	u.Skor = skor
-	u.Tanggal = tanggal
+            // Inisialisasi pertanyaan
+            inisialisasiPertanyaan(&pertanyaan)
 
-	(*D)[*N] = u
-	(*ID)[*N] = inputID
-	(*N)++
+            // Minta user isi skor dengan pertanyaan
+            skor := pertanyaanSkor(pertanyaan)
 
-	fmt.Println("Data berhasil ditambahkan.")
+            u.ID = inputID
+            u.Nama = nama
+            u.Skor = skor
+            u.Tanggal = tanggal
+
+            (*D)[*N] = u
+            (*ID)[*N] = inputID
+            (*N)++
+
+            fmt.Println("Data berhasil ditambahkan.")
+        }
+    }
 }
