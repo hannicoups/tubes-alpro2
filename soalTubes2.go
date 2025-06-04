@@ -12,7 +12,7 @@ type User struct {
 type TabUser [100]User //menyimpan 100 user
 var data TabUser
 
-type TabInt [100]int //menyimpan 100 ID agar bisa di-sort atau dicari
+type TabInt [100]int //menyimpan 100 ID 
 var arrID TabInt
 
 var jumlahData int //total data user yang tersimpan
@@ -186,20 +186,34 @@ func hasilSkor(total int) {
 
 }
 
+// selection sort ascending
 func urutkanData(D *TabUser, ID *TabInt, N int) {
-	var i, j int
-	for i = 0; i < N-1; i++ {
-		for j = i + 1; j < N; j++ {
-			if ID[i] > ID[j] {
-				ID[i], ID[j] = ID[j], ID[i]
-				D[i], D[j] = D[j], D[i]
+	var pass, idx, i, j int
+	var temp User
+
+	for pass = 1; pass <= N-1; pass++ {
+		idx = pass - 1
+		for i = pass; i <= N-1; i++ {
+			if (*ID)[idx] > (*ID)[i] {
+				idx = i
 			}
 		}
+
+		// Tukar data user
+		temp = (*D)[pass-1]
+		(*D)[pass-1] = (*D)[idx]
+		(*D)[idx] = temp
+
+		// Tukar ID
+		j = (*ID)[pass-1]
+		(*ID)[pass-1] = (*ID)[idx]
+		(*ID)[idx] = j
 	}
 }
 
+
 func ubahData(D *TabUser, N int) {
-	var cariID, i int
+	var cariID, i, skorBaru int
 	var tanggalBaru string
 	var ditemukan bool = false
 	var idxDitemukan int = -1
@@ -222,12 +236,12 @@ func ubahData(D *TabUser, N int) {
 
 		fmt.Println("\nSilakan isi kembali kuisioner:")
 		inisialisasiPertanyaan(&pertanyaan)
-		skorBaru := pertanyaanSkor(pertanyaan)
+		skorBaru = pertanyaanSkor(pertanyaan)
 
 		fmt.Print("Masukkan tanggal baru (dd-mm-yyyy): ")
 		fmt.Scan(&tanggalBaru)
-		D[idxDitemukan].Skor = skorBaru
-		D[idxDitemukan].Tanggal = tanggalBaru
+		D[idxDitemukan].Skor = skorBaru //disini skornya diperbarui
+		D[idxDitemukan].Tanggal = tanggalBaru //tanggalnya diperbarui disini
 		fmt.Println("Data berhasil diubah.")
 		hasilSkor(skorBaru)
 	} else {
@@ -252,8 +266,8 @@ func hapusData(D *TabUser, ID *TabInt, N *int) {
 
 	if ditemukan {
 		for j = indeks; j < *N-1; j++ {
-			(*D)[j] = (*D)[j+1]
-			(*ID)[j] = (*ID)[j+1]
+			(*D)[j] = (*D)[j+1] //array data user
+			(*ID)[j] = (*ID)[j+1]  //array ID user 
 		}
 		*N-- 
 		fmt.Println("Data berhasil dihapus.")
