@@ -199,7 +199,7 @@ func urutkanData(D *TabUser, ID *TabInt, N int) {
 }
 
 func ubahData(D *TabUser, N int) {
-	var cariID, i, skorBaru int
+	var cariID, i int
 	var tanggalBaru string
 	var ditemukan bool = false
 	var idxDitemukan int = -1
@@ -236,27 +236,28 @@ func ubahData(D *TabUser, N int) {
 }
 
 func hapusData(D *TabUser, ID *TabInt, N *int) {
-	var cariID, i, j int
+	var cariID, i, j, indeks int
 	var ditemukan bool = false
 
 	fmt.Print("Masukkan ID yang ingin dihapus: ")
 	fmt.Scan(&cariID)
 
+	indeks = -1
 	for i = 0; i < *N; i++ {
 		if D[i].ID == cariID {
 			ditemukan = true
-			// Geser data ke kiri
-			for j = i; j < *N-1; j++ {
-				(*D)[j] = (*D)[j+1]
-				(*ID)[j] = (*ID)[j+1]
-			}
-			*N-- // kurangi jumlah data
-			fmt.Println("Data berhasil dihapus.")
-			break
+			indeks = i
 		}
 	}
 
-	if !ditemukan {
+	if ditemukan {
+		for j = indeks; j < *N-1; j++ {
+			(*D)[j] = (*D)[j+1]
+			(*ID)[j] = (*ID)[j+1]
+		}
+		*N-- 
+		fmt.Println("Data berhasil dihapus.")
+	} else {
 		fmt.Println("ID tidak ditemukan.")
 	}
 }
