@@ -9,17 +9,16 @@ type User struct{
 	Tanggal string
 }
 
-type TabUser [100]User
-var data TabUser
+type TabUser [100]User //menyimpan 100 user
+var data TabUser 
 
-type TabInt [100]int
-var jumlahData int
+type TabInt [100]int //menyimpan 100 ID agar bisa di-sort atau dicari
+var arrID TabInt
+
+var jumlahData int  //total data user yang tersimpan
 
 const Qtotal int = 9
 type TabPertanyaan [Qtotal]string
-
-var arrID TabInt
-
 
 func main(){
 	var totalSkor, inputID, pilihan int
@@ -64,7 +63,6 @@ func main(){
 		fmt.Println("6. Urutkan Berdasarkan Tanggal (Insertion Sort)")
 		fmt.Println("7. Tampilkan 5 Data Terakhir")
 		fmt.Println("8. Tampilkan Rata-rata Skor")
-		fmt.Println("9. Tambah Data")
 		fmt.Println("9. Tambah Data")
 		fmt.Println("0. Keluar")
 		fmt.Print("Pilih: ")
@@ -131,13 +129,13 @@ func tampilan(D *TabUser, N int) {
 	var i int
 	fmt.Println("\nData setelah diurutkan berdasarkan ID:")
 	fmt.Println("ID\tNama\tSkor")
-	for i = 0; i < N; i++ {
+	for i = 0; i < N; i++ { 
 		fmt.Printf("%03d\t%s\t%d\n", D[i].ID, D[i].Nama, D[i].Skor)
 	}
 }
 
 func inisialisasiPertanyaan(p *TabPertanyaan) {
-	*p = TabPertanyaan{
+	*p = TabPertanyaan{       //Mengisi (atau mengganti) isi dari TabPertanyaan yang ditunjuk oleh pointer p dengan data baru.
 		"a. Kurang berminat atau bergairah dalam melakukan apapun",
 		"b. Merasa murung, sedih, atau putus asa",
 		"c. Sulit tidur/mudah terbangun, atau terlalu banyak tidur",
@@ -204,29 +202,34 @@ func ubahData(D *TabUser, N int) {
 	var cariID, i, skorBaru int
 	var tanggalBaru string
 	var ditemukan bool = false
+	var idxDitemukan int = -1
 
 	fmt.Print("Masukkan ID yang ingin diubah: ")
 	fmt.Scan(&cariID)
 
-	for i = 0; i < N; i++ {
+	i = 0
+	for i < N {
 		if D[i].ID == cariID {
 			ditemukan = true
-			fmt.Printf("Data ditemukan: %s (Skor lama: %d, Tanggal lama: %s)\n", D[i].Nama, D[i].Skor, D[i].Tanggal)
-			fmt.Print("Masukkan skor baru: ")
-			fmt.Scan(&skorBaru)
-			fmt.Print("Masukkan tanggal baru (dd-mm-yyyy): ")
-			fmt.Scan(&tanggalBaru)
-			D[i].Skor = skorBaru
-			D[i].Tanggal = tanggalBaru
-			fmt.Println("Data berhasil diubah.")
-			break
+			idxDitemukan = i
 		}
+		i++
 	}
 
-	if !ditemukan {
-		fmt.Println("ID tidak ditemukan.")
+	if ditemukan {
+		fmt.Printf("Data ditemukan: %s (Skor lama: %d, Tanggal lama: %s)\n", D[idxDitemukan].Nama, D[idxDitemukan].Skor, D[idxDitemukan].Tanggal)
+		fmt.Print("Masukkan skor baru: ")
+		fmt.Scan(&skorBaru)
+		fmt.Print("Masukkan tanggal baru (dd-mm-yyyy): ")
+		fmt.Scan(&tanggalBaru)
+		D[idxDitemukan].Skor = skorBaru
+		D[idxDitemukan].Tanggal = tanggalBaru
+		fmt.Println("Data berhasil diubah.")
+	} else {
+		fmt.Println("Data dengan ID tersebut tidak ditemukan.")
 	}
 }
+
 
 func hapusData(D *TabUser, ID *TabInt, N *int) {
 	var cariID, i, j int
@@ -338,7 +341,7 @@ func tanggalToInt(tgl string) int {
 	var dd, mm, yyyy int
 	// tgl format "dd-mm-yyyy"
 	// kita ambil yyyy, mm, dd lalu gabungkan jadi int yyyymmdd
-	dd = (int(tgl[0]-'0')*10 + int(tgl[1]-'0'))
+	dd = (int(tgl[0]-'0')*10 + int(tgl[1]-'0'))  //27 -> 2 = 50 - 48 = 2 * 10 = 20    
 	mm = (int(tgl[3]-'0')*10 + int(tgl[4]-'0'))
 	yyyy = (int(tgl[6]-'0')*1000 + int(tgl[7]-'0')*100 + int(tgl[8]-'0')*10 + int(tgl[9]-'0'))
 	return yyyy*10000 + mm*100 + dd
