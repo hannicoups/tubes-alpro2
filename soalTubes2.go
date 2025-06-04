@@ -2,25 +2,26 @@ package main
 
 import "fmt"
 
-type User struct{
-	ID int
-	Nama string
-	Skor int
+type User struct {
+	ID      int
+	Nama    string
+	Skor    int
 	Tanggal string
 }
 
 type TabUser [100]User //menyimpan 100 user
-var data TabUser 
+var data TabUser
 
 type TabInt [100]int //menyimpan 100 ID agar bisa di-sort atau dicari
 var arrID TabInt
 
-var jumlahData int  //total data user yang tersimpan
+var jumlahData int //total data user yang tersimpan
 
 const Qtotal int = 9
+
 type TabPertanyaan [Qtotal]string
 
-func main(){
+func main() {
 	var totalSkor, inputID, pilihan int
 	var nama, tanggal string
 	var pertanyaan TabPertanyaan
@@ -29,7 +30,7 @@ func main(){
 	fmt.Println("=== PENILAIAN KESEHATAN MENTAL: SELF-ASSESSMENT DEPRESI ===")
 	fmt.Println("Masukkan nama Anda: ")
 	fmt.Scan(&nama)
-	
+
 	fmt.Printf("Masukkan ID anda: ")
 	fmt.Scan(&inputID)
 
@@ -114,7 +115,7 @@ func main(){
 				fmt.Printf("Rata-rata skor dalam 30 hari terakhir: %.2f\n", avg)
 			}
 		case 9:
-    		tambahData(&data, &arrID, &jumlahData)
+			tambahData(&data, &arrID, &jumlahData)
 
 		case 0:
 			return
@@ -129,13 +130,13 @@ func tampilan(D *TabUser, N int) {
 	var i int
 	fmt.Println("\nData setelah diurutkan berdasarkan ID:")
 	fmt.Println("ID\tNama\tSkor")
-	for i = 0; i < N; i++ { 
+	for i = 0; i < N; i++ {
 		fmt.Printf("%03d\t%s\t%d\n", D[i].ID, D[i].Nama, D[i].Skor)
 	}
 }
 
 func inisialisasiPertanyaan(p *TabPertanyaan) {
-	*p = TabPertanyaan{       //Mengisi (atau mengganti) isi dari TabPertanyaan yang ditunjuk oleh pointer p dengan data baru.
+	*p = TabPertanyaan{ //Mengisi (atau mengganti) isi dari TabPertanyaan yang ditunjuk oleh pointer p dengan data baru.
 		"a. Kurang berminat atau bergairah dalam melakukan apapun",
 		"b. Merasa murung, sedih, atau putus asa",
 		"c. Sulit tidur/mudah terbangun, atau terlalu banyak tidur",
@@ -151,7 +152,7 @@ func inisialisasiPertanyaan(p *TabPertanyaan) {
 func pertanyaanSkor(A TabPertanyaan) int {
 	var i int
 	var total, skor int
-	
+
 	fmt.Println("\nJawablah pertanyaan berikut dengan skor (0–3):")
 	fmt.Println("0 = Tidak Pernah, 1 = Kadang-kadang, 2 = Sering, 3 = Hampir Setiap Hari")
 
@@ -185,24 +186,24 @@ func hasilSkor(total int) {
 
 }
 
-func urutkanData(D *TabUser, ID *TabInt, N int){
-    var i, j int
-    for i = 0; i < N-1; i++ {
-        for j = i + 1; j < N; j++ {
-            if ID[i] > ID[j] {
-                ID[i], ID[j] = ID[j], ID[i]
-                D[i], D[j] = D[j], D[i]
-            }
-        }
-    }
+func urutkanData(D *TabUser, ID *TabInt, N int) {
+	var i, j int
+	for i = 0; i < N-1; i++ {
+		for j = i + 1; j < N; j++ {
+			if ID[i] > ID[j] {
+				ID[i], ID[j] = ID[j], ID[i]
+				D[i], D[j] = D[j], D[i]
+			}
+		}
+	}
 }
-
 
 func ubahData(D *TabUser, N int) {
 	var cariID, i, skorBaru int
 	var tanggalBaru string
 	var ditemukan bool = false
 	var idxDitemukan int = -1
+	var pertanyaan TabPertanyaan
 
 	fmt.Print("Masukkan ID yang ingin diubah: ")
 	fmt.Scan(&cariID)
@@ -218,18 +219,21 @@ func ubahData(D *TabUser, N int) {
 
 	if ditemukan {
 		fmt.Printf("Data ditemukan: %s (Skor lama: %d, Tanggal lama: %s)\n", D[idxDitemukan].Nama, D[idxDitemukan].Skor, D[idxDitemukan].Tanggal)
-		fmt.Print("Masukkan skor baru: ")
-		fmt.Scan(&skorBaru)
+
+		fmt.Println("\nSilakan isi kembali kuisioner:")
+		inisialisasiPertanyaan(&pertanyaan)
+		skorBaru := pertanyaanSkor(pertanyaan)
+
 		fmt.Print("Masukkan tanggal baru (dd-mm-yyyy): ")
 		fmt.Scan(&tanggalBaru)
 		D[idxDitemukan].Skor = skorBaru
 		D[idxDitemukan].Tanggal = tanggalBaru
 		fmt.Println("Data berhasil diubah.")
+		hasilSkor(skorBaru)
 	} else {
 		fmt.Println("Data dengan ID tersebut tidak ditemukan.")
 	}
 }
-
 
 func hapusData(D *TabUser, ID *TabInt, N *int) {
 	var cariID, i, j int
@@ -318,7 +322,6 @@ func insertionSortTanggal(D *TabUser, N int) {
 	}
 }
 
-
 func tampilkan5Terakhir(D TabUser, N int) {
 	fmt.Println("\n=== 5 Hasil Terakhir Self-Assessment ===")
 	if N == 0 {
@@ -341,7 +344,7 @@ func tanggalToInt(tgl string) int {
 	var dd, mm, yyyy int
 	// tgl format "dd-mm-yyyy"
 	// kita ambil yyyy, mm, dd lalu gabungkan jadi int yyyymmdd
-	dd = (int(tgl[0]-'0')*10 + int(tgl[1]-'0'))  //27 -> 2 = 50 - 48 = 2 * 10 = 20    
+	dd = (int(tgl[0]-'0')*10 + int(tgl[1]-'0')) //27 -> 2 = 50 - 48 = 2 * 10 = 20
 	mm = (int(tgl[3]-'0')*10 + int(tgl[4]-'0'))
 	yyyy = (int(tgl[6]-'0')*1000 + int(tgl[7]-'0')*100 + int(tgl[8]-'0')*10 + int(tgl[9]-'0'))
 	return yyyy*10000 + mm*100 + dd
@@ -367,48 +370,47 @@ func rataRataBulanTerakhir(D TabUser, N int, hariIni string) float64 {
 }
 
 func tambahData(D *TabUser, ID *TabInt, N *int) {
-    if *N >= len(*D) {
-        fmt.Println("Data sudah penuh, tidak bisa tambah lagi.")
-        return
-    }
+	if *N >= len(*D) {
+		fmt.Println("Data sudah penuh, tidak bisa tambah lagi.")
+		return
+	}
 
-    var u User
-    var nama, tanggal string
-    var inputID int
-    var pertanyaan TabPertanyaan
+	var u User
+	var nama, tanggal string
+	var inputID int
+	var pertanyaan TabPertanyaan
 
-    fmt.Print("Masukkan ID baru: ")
-    fmt.Scan(&inputID)
+	fmt.Print("Masukkan ID baru: ")
+	fmt.Scan(&inputID)
 
-    // Cek apakah ID sudah ada agar tidak duplikat
-    for i := 0; i < *N; i++ {
-        if (*D)[i].ID == inputID {
-            fmt.Println("ID sudah ada, tidak bisa tambah data.")
-            return
-        }
-    }
+	// Cek apakah ID sudah ada agar tidak duplikat
+	for i := 0; i < *N; i++ {
+		if (*D)[i].ID == inputID {
+			fmt.Println("ID sudah ada, tidak bisa tambah data.")
+			return
+		}
+	}
 
-    fmt.Print("Masukkan nama: ")
-    fmt.Scan(&nama)
+	fmt.Print("Masukkan nama: ")
+	fmt.Scan(&nama)
 
-    fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
-    fmt.Scan(&tanggal)
+	fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
+	fmt.Scan(&tanggal)
 
-    // Inisialisasi pertanyaan
-    inisialisasiPertanyaan(&pertanyaan)
+	// Inisialisasi pertanyaan
+	inisialisasiPertanyaan(&pertanyaan)
 
-    // Minta user isi skor dengan pertanyaan
-    skor := pertanyaanSkor(pertanyaan)
+	// Minta user isi skor dengan pertanyaan
+	skor := pertanyaanSkor(pertanyaan)
 
-    u.ID = inputID
-    u.Nama = nama
-    u.Skor = skor
-    u.Tanggal = tanggal
+	u.ID = inputID
+	u.Nama = nama
+	u.Skor = skor
+	u.Tanggal = tanggal
 
-    (*D)[*N] = u
-    (*ID)[*N] = inputID
-    (*N)++
+	(*D)[*N] = u
+	(*ID)[*N] = inputID
+	(*N)++
 
-    fmt.Println("Data berhasil ditambahkan.")
+	fmt.Println("Data berhasil ditambahkan.")
 }
-
