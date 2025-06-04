@@ -34,8 +34,16 @@ func main() {
 	fmt.Printf("Masukkan ID anda: ")
 	fmt.Scan(&inputID)
 
-	fmt.Print("Masukkan tanggal pengisian (dd-mm-yyyy): ")
-	fmt.Scan(&tanggal)
+	for {
+		fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
+		fmt.Scan(&tanggal)
+
+		if isValidTanggal(tanggal) {
+			break
+		} else {
+			fmt.Println("Tanggal tidak valid. Format harus dd-mm-yyyy dan nilai harus logis.")
+		}
+	}
 
 	inisialisasiPertanyaan(&pertanyaan)
 
@@ -365,6 +373,36 @@ func tanggalToInt(tgl string) int {
 	return yyyy*10000 + mm*100 + dd
 }
 
+func isValidTanggal(tgl string) bool {
+	if len(tgl) != 10 || tgl[2] != '-' || tgl[5] != '-' {
+		return false
+	}
+
+	// Ambil digit dan ubah ke int manual
+	dd := int(tgl[0]-'0')*10 + int(tgl[1]-'0')
+	mm := int(tgl[3]-'0')*10 + int(tgl[4]-'0')
+	yy := int(tgl[6]-'0')*1000 + int(tgl[7]-'0')*100 + int(tgl[8]-'0')*10 + int(tgl[9]-'0')
+
+	if dd < 1 || dd > 31 || mm < 1 || mm > 12 || yy < 1900 || yy > 2100 {
+		return false
+	}
+
+	// Validasi jumlah hari tiap bulan
+	daysInMonth := [12]int{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+
+	// Cek tahun kabisat
+	if mm == 2 && ((yy%4 == 0 && yy%100 != 0) || (yy%400 == 0)) {
+		daysInMonth[1] = 29
+	}
+
+	if dd > daysInMonth[mm-1] {
+		return false
+	}
+
+	return true
+}
+
+
 func rataRataBulanTerakhir(D TabUser, N int, hariIni string) float64 {
 	var sum, count int
 	hariIniInt := tanggalToInt(hariIni)
@@ -413,8 +451,17 @@ func tambahData(D *TabUser, ID *TabInt, N *int) {
             fmt.Print("Masukkan nama: ")
             fmt.Scan(&nama)
 
-            fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
-            fmt.Scan(&tanggal)
+            for {
+				fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
+				fmt.Scan(&tanggal)
+
+				if isValidTanggal(tanggal) {
+					break
+				} else {
+					fmt.Println("Tanggal tidak valid. Format harus dd-mm-yyyy dan nilai harus logis.")
+				}
+			}
+
 
             // Inisialisasi pertanyaan
             inisialisasiPertanyaan(&pertanyaan)
