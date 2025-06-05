@@ -68,7 +68,7 @@ func main() {
 		fmt.Println("2. Hapus Data")
 		fmt.Println("3. Cari Data (Sequential Search)")
 		fmt.Println("4. Cari Data (Binary Search)")
-		fmt.Println("5. Urutkan Berdasarkan Skor (Selection Sort)")
+		fmt.Println("5. Urutkan Berdasarkan Skor (Selection Sort Secara Ascending)")
 		fmt.Println("6. Urutkan Berdasarkan Tanggal (Insertion Sort)")
 		fmt.Println("7. Tampilkan 5 Data Terakhir")
 		fmt.Println("8. Tampilkan Rata-rata Skor")
@@ -124,7 +124,11 @@ func main() {
 			}
 		case 9:
 			tambahData(&data, &arrID, &jumlahData)
-
+		
+		case 10:
+			selectionSortSkorDescending(&data, jumlahData)
+			fmt.Println("Data berhasil diurutkan berdasarkan skor Kebawah.")
+			tampilan(&data, jumlahData)
 		case 0:
 			return
 		default:
@@ -220,6 +224,7 @@ func urutkanData(D *TabUser, ID *TabInt, N int) {
 }
 
 
+
 func ubahData(D *TabUser, N int) {
 	var cariID, i, skorBaru int
 	var tanggalBaru string
@@ -307,7 +312,7 @@ func binarySearch(D TabUser, N int, cariID int) int {
 		} else {
 			right = mid - 1
 		}
-	}
+	}12
 	return -1
 }
 
@@ -319,6 +324,23 @@ func selectionSortSkor(D *TabUser, N int) {
 		idx = pass
 		for i = pass + 1; i < N; i++ {
 			if (*D)[i].Skor < (*D)[idx].Skor {
+				idx = i
+			}
+		}
+		temp = (*D)[pass]
+		(*D)[pass] = (*D)[idx]
+		(*D)[idx] = temp
+	}
+}
+
+func selectionSortSkorDescending(D *TabUser, N int) {
+	var pass, idx, i int
+	var temp User
+
+	for pass = 0; pass < N-1; pass++ {
+		idx = pass
+		for i = pass + 1; i < N; i++ {
+			if (*D)[i].Skor > (*D)[idx].Skor {
 				idx = i
 			}
 		}
@@ -367,7 +389,7 @@ func tanggalToInt(tgl string) int {
 	var dd, mm, yyyy int
 	// tgl format "dd-mm-yyyy"
 	// kita ambil yyyy, mm, dd lalu gabungkan jadi int yyyymmdd
-	dd = (int(tgl[0]-'0')*10 + int(tgl[1]-'0')) //27 -> 2 = 50 - 48 = 2 * 10 = 20
+	dd = (int(tgl[0]-'0')*10 + int(tgl[1]-'0')) //27 -> (2 = 50 - 48 = 2 * 10 = 20) && (7 = 55 - 48 = 7)
 	mm = (int(tgl[3]-'0')*10 + int(tgl[4]-'0'))
 	yyyy = (int(tgl[6]-'0')*1000 + int(tgl[7]-'0')*100 + int(tgl[8]-'0')*10 + int(tgl[9]-'0'))
 	return yyyy*10000 + mm*100 + dd
